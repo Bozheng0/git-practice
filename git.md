@@ -49,7 +49,7 @@
 ### 2. git add
 - `.git/index` 文件更新。  
     ![add](/Material/add.PNG)  
-    ![add_index](/Material/add_index_content.PNG)
+    ![add_index](/Material/add_index_content.PNG)  
     `.git/index` 是 Git 的「暫存區」索引檔案，它記錄了被追蹤的文件狀態。每次執行 git add，該文件會被更新，新增或修改的文件資訊會被寫入。
 
 -  `.git/objects/`更新  
