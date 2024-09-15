@@ -36,31 +36,68 @@
 ### 1. git init
 - 在一個目錄中執行 git init 時，會創建一個 `.git` 目錄。
 - `.git` 目錄的結構：  
-    ![init](/Material/init.PNG)
+    ![init](/Material/init.PNG)  
+
+    `HEAD`：指向當前所處的分支（預設為 refs/heads/main 或 refs/heads/master）。
+    `config`：Git 的配置檔案，包含倉庫級別的配置。  
+    `description`：通常用於描述裸倉庫，在非裸倉庫中沒有實際作用。  
+    `hooks/`：存放 Git 鉤子腳本的資料夾（如 pre-commit 鉤子），預設這些鉤子是範本文件。  
+    `info/`：包含不被忽略文件的全域性 exclude 文件。  
+    `objects/`：存儲 Git 物件（如提交、樹和塊物件），這些物件以 SHA-1 雜湊值命名。  
+    `refs/`：存放指向提交物件的引用，例如分支和標籤。
 
 ### 2. git add
-- 執行 git add 命令時，Git 會將這些文件轉換成 blob 對象，並將它們存放在 `.git/objects/` 目錄中。會看到該目錄中新增了一些以 SHA-1 哈希值命名的文件。  
-*註：這些文件是已添加到暫存區的文件的壓縮表示形式。*
+- `.git/index` 文件更新。  
+    ![add](/Material/add.PNG)  
+    ![add_index](/Material/add_index_content.PNG)
+    `.git/index` 是 Git 的「暫存區」索引檔案，它記錄了被追蹤的文件狀態。每次執行 git add，該文件會被更新，新增或修改的文件資訊會被寫入。
 
-### 3. 提交文件 (git commit)
-- 當執行 git commit 時，Git 會創建一個新的 commit 對象，並將它存放在 `.git/objects/` 中。  
-*註：這個 object 包含指向當前 tree object（目錄結構）的指針，以及指向父提交的指針。*
-- `refs/heads/` 目錄中會更新當前分支的指針，使它指向新的提交。
+-  `.git/objects/`更新  
+    -   (第一次) add 前：![init_object](/Material/init_objects.PNG)   
+    -   (第一次) add 後：![add_object](/Material/add_objects.PNG)  
+    -   執行 git add 命令時，Git 會將這些文件轉換成 blob object，並將它們存放在 `.git/objects/` 目錄中。會看到該目錄中新增了一些以 SHA-1 哈希值命名的文件。 
+
+### 3. git commit
+- 當執行 git commit 時，Git 會創建一個新的 commit object，並將它存放在 `.git/objects/` 中。  
+    -   commit 前：![add_object](/Material/add_objects.PNG)   
+    -   commit 後：![commit_object](/Material/commit_objects.PNG) 
+    -   `.git/objects/` 目錄中會生成新的提交物件（commit object）、樹物件（tree object）和塊物件（blob object）。每個物件文件名是基於其內容計算的 SHA-1 雜湊值，並被分成兩層目錄存放，例如 `objects/ab/cdef123456...`。   
+    -   *註：這個 object 包含指向當前 tree object（目錄結構）的指針，以及指向父提交的指針。*
+- `.git/refs/heads/` 目錄中會更新當前分支（如 main 或 master），其指針指向新生成的提交物件的雜湊值。
 - `logs/HEAD` 和 `logs/refs/heads/` 會更新，記錄當前分支的歷史操作。
 
-### 4. 創建分支 (git branch)
-- 創建一個新的分支時，Git 會在 `.git/refs/heads/` 目錄下新增一個文件，這個文件的內容是新分支所指向的提交的哈希值。
-- 例如：
+### 4. git branch
+- 創建一個新的分支時，Git 會在 `.git/refs/heads/` 目錄下新增一個文件，這個文件的內容是新分支所指向的提交的哈希值。  
+- 例如：    
+![branch](/Material/branch_new.PNG) 
 
-      執行 git branch new-feature 之後，會在 `.git/refs/heads/` 目錄中看到一個名為 new-feature 的文件，該文件記錄了新分支的提交哈希。
+      執行 git branch test 之後，會在 `.git/refs/heads/` 目錄中看到一個名為 test 的文件，該文件記錄了新分支的提交 hash。(目前有 master 與 test)  
 
-### 5. 合併分支 (git merge)
-- 執行 git merge 時，Git 會生成一個新的提交，該提交有多個父提交（來自被合併的分支）。此時 `.git/objects/` 目錄會新增一個 commit 對象，包含合併結果。
-- `refs/heads/` 中的當前分支文件會更新為合併後的最新提交。
-
+### 5. git merge
+- 執行合併操作後，.git/objects/ 和 .git/refs/heads/ 會更新：
+    - `.git/objects/` 中會生成一個新的合併提交物件，它記錄合併後的狀態，包含兩個父提交的雜湊值。
+    - `.git/refs/heads/` 中的分支檔案（如 master）會更新，指向合併後的最新提交物件。
 
 ![data-model-4](/Material/data-model-4.png)
 
+### 6. git checkout
+- 切換分支後，.git/HEAD 檔案會更新：  
+    - `.git/HEAD` 檔案會指向當前所在的分支。例如，從 master 切換到 test，HEAD 檔案的內容將從 `ref: refs/heads/master` 改為 `ref: refs/heads/test`。  
+    - 如果使用了分離 HEAD 狀態 (git checkout <commit_hash>)，HEAD 檔案會直接指向一個提交雜湊值，而不是分支名稱。
+
+### 7. git reset
+- 重置操作根據不同的模式（如 --soft、--mixed、--hard）對 .git 資料夾有不同的影響：  
+    - git reset --soft：僅更新 `.git/HEAD` 檔案，指向目標提交的雜湊值。  
+    - git reset --mixed：更新 `.git/HEAD` 和 `.git/index` 檔案，暫存區會重置為目標提交的文件狀態。  
+    - git reset --hard：更新 `.git/HEAD` 和 `.git/index` 檔案，同時工作目錄中的文件也會恢復到目標提交的狀態。
+
+### 8. git pull
+- `.git/refs/remotes/` 目錄下的檔案（如 `origin/main`）會更新，指向從遠端倉庫獲取的最新提交物件的雜湊值。  
+- 如果有新的提交物件，`.git/objects/` 資料夾中會存儲這些新物件（包括提交、樹和物件）。  
+- `.git/refs/heads/` 中的本地分支引用檔案會更新為合併後的最新 commit。
+
+### 9. git branch -d
+- 刪除分支後，在 `.git/refs/heads/` 資料夾下，對應的分支檔案（如 test）會被刪除。
 
 ---
 <br></br>
