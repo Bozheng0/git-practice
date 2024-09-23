@@ -10,13 +10,16 @@
 > - 在每次 commit 時，Git 都會創建一個新的 tree object，代表當前項目的目錄結構。
 > - Tree 的結構非常類似於作業系統的目錄結構，允許儲存任意深度的嵌套目錄。每個 Tree 都會通過指針鏈接到它包含的 blob 和其他 tree，形成層次化的資料結構。
 ![data-model-1](/Material/data-model-1.png)
+圖片來源：<https://git-scm.com/book/en/v2/Git-Internals-Git-Objects>
 ![data-model-2](/Material/data-model-2.png)
+圖片來源：<https://git-scm.com/book/en/v2/Git-Internals-Git-Objects>
 
 ### 3. Commit
 > - Commit 是 Git 中的核心資料結構之一，用來記錄每次提交的快照。每次提交都保存了一個指向當前文件目錄（Tree）的指針，以及提交訊息（如提交者、提交時間、提交描述等）。Commit 還包含對應的父 commit，從而形成一條提交歷史鏈條。
 > - 每次提交後，Git 會記錄當時所有文件的狀態，而不只是修改的部分。雖然每個提交都可以指向多個父提交（例如在合併時），但每次普通提交通常只會指向一個父提交。
 > - commit 的指針結構確保了 Git 的歷史是不可變的，所有修改都可以被追溯。
 ![data-model-3](/Material/data-model-3.png)
+圖片來源：<https://git-scm.com/book/en/v2/Git-Internals-Git-Objects>
 
 ### 4. Branch
 > - Branch 是一個 Git 中的指針，它指向一個特定的 commit。每個分支都是一條提交歷史的線路，允許在多條開發線路上進行工作。分支只是對某個提交的引用，在一個分支上進行新的提交時，這個分支指針會自動前移到最新的提交。
@@ -79,6 +82,7 @@
     - `.git/refs/heads/` 中的分支檔案（如 master）會更新，指向合併後的最新提交物件。
 
 ![data-model-4](/Material/data-model-4.png)
+圖片來源：<https://git-scm.com/book/en/v2/Git-Internals-Git-References>
 
 ### 6. git checkout
 - 切換分支後，.git/HEAD 檔案會更新：  
