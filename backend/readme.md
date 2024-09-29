@@ -142,12 +142,94 @@ app.listen(PORT, () => {
 
 # 範例程式中用 require，但上週的 Stack 是用 import/export，這兩種分別是 JavaScript 引用模組的兩種方式: CJS vs ESM，這兩者分別怎麼用？
 
+在 JavaScript 中，require 和 import/export 是兩種不同的模組系統，分別代表 CommonJS (CJS) 和 ECMAScript Modules (ESM)。
+
+### 1. CommonJS (CJS)
+用法：
+- 引入模組：使用 require 函數來引入模組。
+- 導出模組：使用 module.exports 或 exports 來導出模組的內容。
+- 範例：
+    ```javascript
+    // myModule.js (導出模組)
+    const greeting = (name) => `Hello, ${name}!`;
+    module.exports = greeting;
+
+    // app.js (引入模組)
+    const greeting = require('./myModule');
+    console.log(greeting('Alice')); // 輸出: Hello, Alice!
+    ```
+
+### 2. ECMAScript Modules (ESM)
+用法：
+- 引入模組：使用 import 語法來引入模組。
+- 導出模組：使用 export 語法來導出模組的內容。
+- 範例：
+    ```javascript
+    // myModule.js (導出模組)
+    export const greeting = (name) => `Hello, ${name}!`;
+
+    // app.js (引入模組)
+    import { greeting } from './myModule.js'; // 注意需加 .js 後綴
+    console.log(greeting('Alice')); // 輸出: Hello, Alice!
+    ```
 
 
+<br></br>
+
+# localhost 是什麼？
+
+localhost 是指當前主機的網路位址，通常對應於 IP 位址 127.0.0.1。  
+主要用途包括：
+- 測試和開發：開發者可以在本地主機上測試應用程式，而不需要將它們部署到外部伺服器。
+- 訪問本地伺服器：當啟動本地伺服器時，可以通過 http://localhost:port 訪問（如 http://localhost:3000）。
+
+使用 localhost 進行開發相對安全，因為網路請求不會離開本機。
 
 
+<br></br>
 
+# curl 是什麼？查查看怎麼用 curl 來測試網路連線？常用參數有哪些？
 
+curl 是一個命令行工具，用於發送和接收網路請求，支持多種協議（如 HTTP、HTTPS、FTP 等）。適合於測試 API、下載檔案以及進行網路連線測試。  
+## 使用 curl 測試網路連線：
+- 範例： (測試與某個網站的連線)
+    ```bash
+    curl <URL>
+    curl https://www.example.com
+    ```
+## 常見的參數
+
+```bash
+# 1. 基本 GET 請求
+curl <URL>
+curl https://www.example.com
+
+# 2. 只獲取 HTTP 頭部資訊 (HEAD 請求)
+curl -I <URL>
+curl -I https://www.example.com
+
+# 3. POST 請求，傳送數據
+curl -X POST -d "name=John&age=30" <URL>
+curl -X POST -d "username=test&password=1234" https://www.example.com/login
+
+# 4. 跟隨重定向
+curl -L <URL>
+curl -L https://www.example.com
+
+# 5. 自定義標頭
+curl -H "Content-Type: application/json" <URL>
+curl -H "Content-Type: application/json" -d '{"name": "John"}' https://www.example.com/api
+
+# 6. 保存輸出到檔案
+curl -o output.html <URL>
+curl -o homepage.html https://www.example.com
+
+# 7. 使用基本認證
+curl -u username:password <URL>
+curl -u myuser:mypassword https://www.example.com/protected
+```
+<br></br>
+---
 參考資源：  
 - [深入理解devDependencies和dependencies：在Node.js项目中的角色与差异](https://cloud.baidu.com/article/2948793)
 - [dependencies v.s devDependencies](https://medium.com/itsems-frontend/nodejs-npm-dependencies-devdependencies-8934f641c8ef)
@@ -156,3 +238,10 @@ app.listen(PORT, () => {
 - [怎麼修改nodejs連接埠號](https://www.php.cn/zh-tw/faq/522104.html#google_vignette)
 - [設定joi與config dotenv環境參數](https://ithelp.ithome.com.tw/articles/10195267)
 - [gitignore - 杜絕上傳錯誤資料，從此不再發生慘痛經驗](https://ithelp.ithome.com.tw/m/articles/10241730)
+- [什麼是 cjs, esm, amd, umd 我該如何選擇，js cjs 與 mjs 又有什麼差別](https://medium.com/@derekjan1240/%E4%BB%80%E9%BA%BC%E6%98%AF-cjs-esm-amd-umd-%E6%88%91%E8%A9%B2%E5%A6%82%E4%BD%95%E9%81%B8%E6%93%87-js-cjs-%E8%88%87-mjs-%E5%8F%88%E6%9C%89%E4%BB%80%E9%BA%BC%E5%B7%AE%E5%88%A5-b2c3a929397c)
+- [【程式語言 - Javascript】 ESM與CJS](https://vocus.cc/article/649cc0e0fd89780001a7d34d)
+- [Localhost 是什么](https://www.freecodecamp.org/chinese/news/what-is-localhost/)
+- [Linux Curl Command 指令與基本操作入門教學](https://blog.techbridge.cc/2019/02/01/linux-curl-command-tutorial/)
+- [[Linux] curl 網路資料傳輸工具，常用指令範例教學](https://www.jinnsblog.com/2022/12/linux-curl-data-transfer-tutorial.html)
+
+
