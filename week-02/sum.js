@@ -11,6 +11,18 @@ console.log(sum([1, 5, 3, 2])); // 11
 
 
 
+// 補充：使用 forEach
+function sum0(ary) {
+    let result = 0;
+    ary.forEach(current => {
+        result += current;
+    });
+    return result;
+}
+
+console.log(sum0([1, 5, 3, 2])); // 11
+
+
 //(optional) 挑戰題: 有幾種寫法？
 // 利用 for 迴圈
 function sum1(ary) {
@@ -22,6 +34,7 @@ function sum1(ary) {
 }
 
 console.log(sum1([1, 5, 3, 2])); // 11
+
 
 
 // 利用 while 迴圈

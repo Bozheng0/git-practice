@@ -1,6 +1,6 @@
 ﻿// main.js
 // TODO 以 Module 的方式匯入，例如:
-import Stack from './stack.js';
+import Stack from './stack.mjs';
 
 
 let stack = new Stack();/*
@@ -45,5 +45,10 @@ stack.push(20);
 stack.print(); // 應該顯示 [10, 20]
 stack.clear();
 stack.print(); // 應該顯示 []
+
+
+// 補充： 如果針對一個空的 stack pop 或 peek 會發生什麼事？
+console.log(stack.pop());  // 顯示 undefined
+console.log(stack.peek()); // 顯示 undefined
 
 
